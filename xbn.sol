@@ -1,7 +1,11 @@
 /* 
+
 This is a standard token contract. This allows the creation of a fixed market cap token.
 It also has some features that facilitate upgrading it to a new token contract in the future
 while keeping a 1:1 parity.
+
+File lincensed under WTFPL: http://www.wtfpl.net
+
 */
 
 contract tokenRecipient { function sendApproval(address _from, uint256 _value, address _token); }
