@@ -5,6 +5,7 @@ for shareholders who want to receive the profit to ping this contract. Their add
 contract is automatically disbursed among all active shareholders, in proportion to their share. Tokens can also be disbursed
 using a separate function.
 
+File lincensed under WTFPL: http://www.wtfpl.net
 
 */
 
