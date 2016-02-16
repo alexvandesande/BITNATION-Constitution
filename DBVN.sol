@@ -33,11 +33,11 @@ contract DBVN is owned {
     uint public debatingPeriodInMinutes;
     int public majorityMargin;
     Proposal[] public proposals;
+    Article[] public articlesOfConstitution;
     uint public numProposals;
     mapping (address => uint) public memberId;
     Member[] public members;
-    string public constitutionURL;
-    
+
     event ProposalAdded(uint proposalID, address recipient, uint amount, string description);
     event Voted(uint proposalID, bool position, address voter);
     event ProposalTallied(uint proposalID, int result, uint quorum, bool active);
@@ -58,6 +58,13 @@ contract DBVN is owned {
         mapping (address => bool) voted;
     }
 
+    struct Article {
+        string summary;
+        string fullTextURI;
+        bool valid;
+        uint createdAt;
+    }
+    
     struct Member {
         address member;
         uint rank;
@@ -72,18 +79,27 @@ contract DBVN is owned {
         string justification;
     }
 
-
     /* First time setup */
-    function DBVN(string constitutionURL, uint totalRankNeededForDecisions, uint minutesForDebate, int marginOfVotesForMajority, address congressLeader) {
+    function DBVN(uint totalRankNeededForDecisions, uint minutesForDebate, int marginOfVotesForMajority, address congressLeader) {
         rankThreshold = totalRankNeededForDecisions;
         debatingPeriodInMinutes = minutesForDebate;
         majorityMargin = marginOfVotesForMajority;
         members.length++;
         members[0] = Member({member: 0, rank: 0, canAddProposals: false, memberSince: now, name: ''});
         if (congressLeader != 0) owner = congressLeader;
-        constitutionURL = constitutionURL;
     }
 
+    /* change constitution */
+    function addArticle(string summary, string fullTextURI) onlyOwner {
+        uint id = articlesOfConstitution.length++;
+        articlesOfConstitution[id] = Article({summary: summary, fullTextURI: fullTextURI, valid: true, createdAt: now })
+    }
+    
+    function repealArticle(uint articleID, bool repeal) onlyOwner {
+        article = articlesOfConstitution[articleID];
+        article.valid = !repeal;
+    }
+    
     /*make member*/
     function changeMembership(address targetMember, uint rank, bool canAddProposals, string memberName) onlyOwner {
         uint id;
