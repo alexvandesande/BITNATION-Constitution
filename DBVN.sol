@@ -92,11 +92,11 @@ contract DBVN is owned {
     /* change constitution */
     function addArticle(string summary, string fullTextURI) onlyOwner {
         uint id = articlesOfConstitution.length++;
-        articlesOfConstitution[id] = Article({summary: summary, fullTextURI: fullTextURI, valid: true, createdAt: now })
+        articlesOfConstitution[id] = Article({summary: summary, fullTextURI: fullTextURI, valid: true, createdAt: now });
     }
     
     function repealArticle(uint articleID, bool repeal) onlyOwner {
-        article = articlesOfConstitution[articleID];
+        Article article = articlesOfConstitution[articleID];
         article.valid = !repeal;
     }
     
