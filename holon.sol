@@ -26,7 +26,7 @@ contract owned {
 /* The token is used as a voting shares */
 contract token { function mintToken(address target, uint256 mintedAmount);  }
 
-contract DBVN is owned {
+contract holon is owned {
 
     /* Contract Variables and events */
     uint public rankThreshold;
@@ -34,6 +34,7 @@ contract DBVN is owned {
     int public majorityMargin;
     Proposal[] public proposals;
     Article[] public articlesOfConstitution;
+    string public constitutionLink;
     uint public numProposals;
     mapping (address => uint) public memberId;
     Member[] public members;
@@ -60,7 +61,6 @@ contract DBVN is owned {
 
     struct Article {
         string summary;
-        string fullTextURI;
         bool valid;
         uint createdAt;
     }
@@ -80,24 +80,29 @@ contract DBVN is owned {
     }
 
     /* First time setup */
-    function DBVN(uint totalRankNeededForDecisions, uint minutesForDebate, int marginOfVotesForMajority, address congressLeader) {
+    function holon(uint totalRankNeededForDecisions, uint minutesForDebate, int marginOfVotesForMajority, address congressLeader, string constitutionURL) {
         rankThreshold = totalRankNeededForDecisions;
         debatingPeriodInMinutes = minutesForDebate;
         majorityMargin = marginOfVotesForMajority;
         members.length++;
         members[0] = Member({member: 0, rank: 0, canAddProposals: false, memberSince: now, name: ''});
         if (congressLeader != 0) owner = congressLeader;
+        constitutionLink = constitutionURL;
     }
 
     /* change constitution */
-    function addArticle(string summary, string fullTextURI) onlyOwner {
+    function addArticle(string summary) onlyOwner {
         uint id = articlesOfConstitution.length++;
-        articlesOfConstitution[id] = Article({summary: summary, fullTextURI: fullTextURI, valid: true, createdAt: now });
+        articlesOfConstitution[id] = Article({summary: summary, valid: true, createdAt: now });
     }
     
     function repealArticle(uint articleID, bool repeal) onlyOwner {
         Article article = articlesOfConstitution[articleID];
         article.valid = !repeal;
+    }
+    
+    function updateConstitutionLink(string newConstitutionLink) onlyOwner {
+        constitutionLink = newConstitutionLink;
     }
     
     /*make member*/
